@@ -1,4 +1,7 @@
 {
   "item.traversaltweaker.citrine": "Citrine",
-  "itemGroup.traversaltweaker": "Traversal Tweaker"
+  "itemGroup.traversaltweaker": "Traversal Tweaker",
+  "block.traversaltweaker.citrine_block": "Citrine Block",
+  "block.traversaltweaker.test_block": "Test Block",
+  "block.traversaltweaker.tree_tap": "Tree Tap"
 }

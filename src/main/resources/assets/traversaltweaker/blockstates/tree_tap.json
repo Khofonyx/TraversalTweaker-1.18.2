@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "traversaltweaker:block/tree_tap",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "traversaltweaker:block/tree_tap"
+    },
+    "facing=south": {
+      "model": "traversaltweaker:block/tree_tap",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "traversaltweaker:block/tree_tap",
+      "y": 270
+    }
+  }
+}
