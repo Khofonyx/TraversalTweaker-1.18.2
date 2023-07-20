@@ -46,7 +46,7 @@ public class ModBlocks {
     public static final  RegistryObject<Block> TEST_BLOCK = registerBlock("test_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
             .strength(5f).requiresCorrectToolForDrops()) , ModCreativeModeTab.TRAVERSAL_TWEAKER);
 
-    public static final RegistryObject<Block> TREE_TAP = registerBlock("tree_tap", () -> new TreeTapBlock(BlockBehaviour.Properties.of(Material.GRASS)
-            .strength(3f).requiresCorrectToolForDrops().sound(SoundType.CHAIN)), ModCreativeModeTab.TRAVERSAL_TWEAKER);
+    public static final RegistryObject<Block> TREE_TAP = registerBlock("tree_tap", () -> new TreeTapBlock(BlockBehaviour.Properties.of(Material.CLAY)
+            .strength(.3f).sound(SoundType.CHAIN)), ModCreativeModeTab.TRAVERSAL_TWEAKER);
 
 }
