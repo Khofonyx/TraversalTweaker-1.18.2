@@ -5,10 +5,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -16,43 +13,39 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ForgeHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Random;
 
-
 public class TreeTapBlock extends Block {
     private static final Map<Direction, VoxelShape> DIRECTIONALSHAPE;
-
-    public static final IntegerProperty SAP_LEVEL = IntegerProperty.create("sap_level", 0, 1);
+    public static final IntegerProperty SAP_LEVEL = BlockStateProperties.AGE_1;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return getShape(pState);
     }
-
     public TreeTapBlock(Properties pProperties) {
         super(pProperties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState((BlockState)((BlockState)((BlockState)this.stateDefinition.any()).setValue(FACING, Direction.NORTH)).setValue(SAP_LEVEL, 0));
     }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(new Property[]{FACING, SAP_LEVEL});
     }
-
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         BlockState blockstate = pLevel.getBlockState(pPos.relative((pState.getValue(FACING)).getOpposite()));
         return blockstate.is(BlockTags.JUNGLE_LOGS);
     }
-
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
@@ -71,34 +64,22 @@ public class TreeTapBlock extends Block {
                 }
             }
         }
-
         return null;
     }
-
-
     public static VoxelShape getShape(BlockState pState) {
         return (VoxelShape)DIRECTIONALSHAPE.get(pState.getValue(FACING));
     }
-
     @Override
     public boolean isRandomlyTicking(BlockState pState) {
-        return true;
+        return (Integer)pState.getValue(SAP_LEVEL) < 1;
     }
-
-
     @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
-        super.randomTick(pState, pLevel, pPos, pRandom);
-
-        /*
-        int sapLevel = state.getValue(SAP_LEVEL);
-        if (sapLevel < 3)
-        {
-            if (sapLevel + 1 == 3)
-                level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, 1f);
-            this.setSapLevel(level, pos, state, sapLevel + 1, true);
+        int i = (Integer)pState.getValue(SAP_LEVEL);
+        if (i < 1 && ForgeHooks.onCropsGrowPre(pLevel, pPos, pState, pLevel.random.nextInt(5) == 0)) {
+            pLevel.setBlock(pPos, (BlockState)pState.setValue(SAP_LEVEL, i + 1), 1);
+            ForgeHooks.onCropsGrowPost(pLevel, pPos, pState);
         }
-         */
     }
 
     static {
